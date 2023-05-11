@@ -1,0 +1,5 @@
+KERRY JOHN DISTRICT OF COLUMBIA, 11-2-2004 FAIL Message: stale element reference: s
+BUSH GEORGE W DISTRICT OF COLUMBIA, 11-2-2004 FAIL Message:   Stacktrace:  Backtrace: 
+OBAMA BARACK H DISTRICT OF COLUMBIA, 11-6-2012 FAIL Message:   Stacktrace:  Backtrace: 
+OBAMA BARACK H KANSAS, 11-6-2012 FAIL there's only 1 result, can't downlo
+TRUMP DONALD J MARYLAND, 11-8-2016 FAIL Message: no such element: Unable to

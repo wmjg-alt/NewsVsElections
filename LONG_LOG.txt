@@ -1,0 +1,260 @@
+
+D:\FALL2022\capstone>python run_modeling.py
+NOTE: Redirects are currently not supported in Windows or MacOs.
+num of races: 2561
+avg num of participants in a race: 1.9010517278385919
+Parties D, R, I: Counter({1.0: 2363, 0.0: 2237, 2.0: 59})
+
+train/dev/test splitting base data
+TRAIN 3260
+DEV 698
+TEST 701
+
+train/dev/test splitting with BOW features
+TRAIN 3260
+DEV 698
+TEST 701
+
+--------------train/test bagofword ML model
+              precision    recall  f1-score   support
+
+       False       0.79      0.69      0.74       362
+        True       0.71      0.81      0.76       339
+
+    accuracy                           0.75       701
+   macro avg       0.75      0.75      0.75       701
+weighted avg       0.75      0.75      0.75       701
+
+
+----------- train test on BERT model
+BERT model retraining...
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertForSequenceClassification: ['cls.seq_relationship.bias', 'cls.predictions.decoder.weight', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.bias', 'cls.predictions.transform.dense.bias', 'cls.seq_relationship.weight']
+- This IS expected if you are initializing BertForSequenceClassification from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertForSequenceClassification from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of BertForSequenceClassification were not initialized from the model checkpoint at bert-base-uncased and are newly initialized: ['classifier.bias', 'classifier.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+-------------------------
+Epoch 1: Validation Accuracy: 0.6790830945558739 -- TIME: 02:08
+Epoch 2: Validation Accuracy: 0.7263610315186246 -- TIME: 02:07
+Epoch 3: Validation Accuracy: 0.7191977077363897 -- TIME: 02:07
+Epoch 4: Validation Accuracy: 0.664756446991404 -- TIME: 02:07
+Epoch 5: Validation Accuracy: 0.7292263610315186 -- TIME: 02:06
+Epoch 6: Validation Accuracy: 0.7449856733524355 -- TIME: 02:07
+Epoch 7: Validation Accuracy: 0.7564469914040115 -- TIME: 02:08
+Epoch 8: Validation Accuracy: 0.7449856733524355 -- TIME: 02:06
+Epoch 9: Validation Accuracy: 0.7478510028653295 -- TIME: 02:05
+Epoch 10: Validation Accuracy: 0.7421203438395415 -- TIME: 02:05
+....testing...
+              precision    recall  f1-score   support
+
+           0       0.69      0.79      0.74       316
+           1       0.80      0.71      0.75       385
+
+    accuracy                           0.74       701
+   macro avg       0.75      0.75      0.74       701
+weighted avg       0.75      0.74      0.75       701
+
+saved model?: True
+
+---------NN-EXPERIMENT  lstm    bow
+  epoch    f1_macro    f1_micro    train_loss    valid_acc    valid_loss    cp      dur
+-------  ----------  ----------  ------------  -----------  ------------  ----  -------
+      1      0.7664      0.7679        0.5370       0.7679        0.4955     +  26.8121
+      2      0.7701      0.7708        0.3840       0.7708        0.5150     +  25.5104
+      3      0.7561      0.7564        0.3138       0.7564        0.5444        25.9247
+      4      0.7460      0.7464        0.2592       0.7464        0.6472        26.8905
+      5      0.7392      0.7393        0.2139       0.7393        0.7016        26.5301
+      6      0.7282      0.7292        0.1927       0.7292        0.8057        28.0203
+      7      0.7435      0.7436        0.1713       0.7436        0.9242        29.2894
+      8      0.7392      0.7393        0.1606       0.7393        0.8393        27.0740
+      9      0.7407      0.7407        0.1537       0.7407        0.9450        26.4169
+     10      0.7245      0.7249        0.1483       0.7249        0.9254        26.3788
+training done, reloading best checkpoint...
+Re-initializing module because the following parameters were re-set: dr, embedding_dim, hidden_layer_sizes, llm, num_classes, vocab_size.
+Re-initializing criterion.
+Re-initializing optimizer.
+
+[0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0]
+[0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0]
+-------- TEST CLASSIFICATION REPORT --------------
+              precision    recall  f1-score   support
+
+           0       0.66      0.89      0.75       316
+           1       0.87      0.62      0.72       385
+
+    accuracy                           0.74       701
+   macro avg       0.76      0.75      0.74       701
+weighted avg       0.77      0.74      0.74       701
+
+---------NN-EXPERIMENT  lstm    distilbert-base-uncased
+Some weights of the model checkpoint at distilbert-base-uncased were not used when initializing DistilBertModel: ['vocab_layer_norm.weight', 'vocab_layer_norm.bias', 'vocab_projector.bias', 'vocab_projector.weight', 'vocab_transform.weight', 'vocab_transform.bias']
+- This IS expected if you are initializing DistilBertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing DistilBertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+  epoch    f1_macro    f1_micro    train_loss    valid_acc    valid_loss    cp       dur
+-------  ----------  ----------  ------------  -----------  ------------  ----  --------
+      1      0.5691      0.6017        0.6796       0.6017        0.6680     +  152.5189
+      2      0.7263      0.7264        0.6305       0.7264        0.5532     +  150.1550
+      3      0.7225      0.7235        0.5088       0.7235        0.5115        150.2169
+      4      0.7337      0.7350        0.4670       0.7350        0.5049     +  149.9277
+      5      0.7435      0.7436        0.4441       0.7436        0.4964     +  151.0800
+      6      0.7282      0.7292        0.4289       0.7292        0.5087        150.1391
+      7      0.7235      0.7249        0.4153       0.7249        0.5205        149.9154
+      8      0.7207      0.7221        0.4020       0.7221        0.5322        149.9307
+      9      0.7195      0.7206        0.3910       0.7206        0.5474        152.5821
+     10      0.6970      0.7020        0.3762       0.7020        0.6092        152.3729
+training done, reloading best checkpoint...
+Re-initializing module because the following parameters were re-set: dr, embedding_dim, hidden_layer_sizes, llm, num_classes, vocab_size.
+Re-initializing criterion.
+Re-initializing optimizer.
+
+[0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0]
+[1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0]
+-------- TEST CLASSIFICATION REPORT --------------
+              precision    recall  f1-score   support
+
+           0       0.68      0.79      0.73       316
+           1       0.80      0.69      0.74       385
+
+    accuracy                           0.74       701
+   macro avg       0.74      0.74      0.74       701
+weighted avg       0.75      0.74      0.74       701
+
+---------NN-EXPERIMENT  lstm    bert-base-uncased
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.seq_relationship.bias', 'cls.predictions.decoder.weight', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.bias', 'cls.predictions.transform.dense.bias', 'cls.seq_relationship.weight']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+  epoch    f1_macro    f1_micro    train_loss    valid_acc    valid_loss    cp       dur
+-------  ----------  ----------  ------------  -----------  ------------  ----  --------
+      1      0.4335      0.5759        0.6861       0.5759        0.6798     +  214.7118
+      2      0.5266      0.6017        0.6775       0.6017        0.6744     +  210.4828
+      3      0.5319      0.5989        0.6732       0.5989        0.6695        221.9471
+      4      0.5481      0.5989        0.6688       0.5989        0.6630        218.8910
+      5      0.5805      0.6203        0.6618       0.6203        0.6525     +  218.4329
+      6      0.6299      0.6576        0.6436       0.6576        0.6289     +  216.4014
+      7      0.6871      0.7006        0.6121       0.7006        0.5967     +  222.2047
+      8      0.7022      0.7120        0.5718       0.7120        0.5647     +  222.9698
+      9      0.7104      0.7163        0.5215       0.7163        0.5376     +  234.5151
+     10      0.7205      0.7249        0.4896       0.7249        0.5280     +  231.0631
+training done, reloading best checkpoint...
+Re-initializing module because the following parameters were re-set: dr, embedding_dim, hidden_layer_sizes, llm, num_classes, vocab_size.
+Re-initializing criterion.
+Re-initializing optimizer.
+
+[0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0]
+[1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0]
+-------- TEST CLASSIFICATION REPORT --------------
+              precision    recall  f1-score   support
+
+           0       0.71      0.64      0.68       316
+           1       0.73      0.79      0.76       385
+
+    accuracy                           0.72       701
+   macro avg       0.72      0.71      0.72       701
+weighted avg       0.72      0.72      0.72       701
+
+---------NN-EXPERIMENT  lstm    openai-gpt
+Using pad_token, but it is not set yet.
+  epoch    f1_macro    f1_micro    train_loss    valid_acc    valid_loss    cp       dur
+-------  ----------  ----------  ------------  -----------  ------------  ----  --------
+      1      0.6595      0.6777        0.6548       0.6777        0.5850     +  236.3581
+      2      0.7333      0.7335        0.5625       0.7335        0.5231     +  232.6037
+      3      0.7275      0.7278        0.4974       0.7278        0.5217        235.9964
+      4      0.7289      0.7307        0.4717       0.7307        0.5204        224.7062
+      5      0.7400      0.7407        0.4566       0.7407        0.5205     +  221.0154
+      6      0.7244      0.7264        0.4527       0.7264        0.5377        221.2527
+      7      0.7273      0.7278        0.4420       0.7278        0.5221        221.2584
+      8      0.7314      0.7321        0.4337       0.7321        0.5295        221.1022
+      9      0.7406      0.7407        0.4389       0.7407        0.5271        220.5434
+     10      0.7208      0.7235        0.4310       0.7235        0.5366        221.0602
+training done, reloading best checkpoint...
+Re-initializing module because the following parameters were re-set: dr, embedding_dim, hidden_layer_sizes, llm, num_classes, vocab_size.
+Re-initializing criterion.
+Re-initializing optimizer.
+
+[0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0]
+[1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0]
+-------- TEST CLASSIFICATION REPORT --------------
+              precision    recall  f1-score   support
+
+           0       0.68      0.76      0.72       316
+           1       0.79      0.71      0.75       385
+
+    accuracy                           0.73       701
+   macro avg       0.73      0.74      0.73       701
+weighted avg       0.74      0.73      0.74       701
+
+---------NN-EXPERIMENT  lstm    gpt2
+Using pad_token, but it is not set yet.
+  epoch    f1_macro    f1_micro    train_loss    valid_acc    valid_loss    cp       dur
+-------  ----------  ----------  ------------  -----------  ------------  ----  --------
+      1      0.5589      0.5903        0.6806       0.5903        0.6786     +  219.1921
+      2      0.5478      0.5802        0.6766       0.5802        0.6790        217.6659
+      3      0.5528      0.5802        0.6746       0.5802        0.6783        217.5635
+      4      0.5766      0.6017        0.6732       0.6017        0.6749     +  217.4789
+      5      0.5717      0.5974        0.6708       0.5974        0.6739        217.3978
+      6      0.5870      0.6117        0.6675       0.6117        0.6706     +  217.2235
+      7      0.6145      0.6418        0.6606       0.6418        0.6601     +  217.3852
+      8      0.6359      0.6590        0.6518       0.6590        0.6518     +  217.3638
+      9      0.6508      0.6748        0.6427       0.6748        0.6418     +  217.1688
+     10      0.6544      0.6719        0.6330       0.6719        0.6332        217.4520
+training done, reloading best checkpoint...
+Re-initializing module because the following parameters were re-set: dr, embedding_dim, hidden_layer_sizes, llm, num_classes, vocab_size.
+Re-initializing criterion.
+Re-initializing optimizer.
+
+[0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1]
+[1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0]
+-------- TEST CLASSIFICATION REPORT --------------
+              precision    recall  f1-score   support
+
+           0       0.71      0.48      0.57       316
+           1       0.66      0.84      0.74       385
+
+    accuracy                           0.68       701
+   macro avg       0.69      0.66      0.66       701
+weighted avg       0.68      0.68      0.67       701
+
+
+D:\FALL2022\capstone>python run_modeling.py
+NOTE: Redirects are currently not supported in Windows or MacOs.
+---------NN-EXPERIMENT  lstm    bert-base-uncased
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.transform.dense.weight', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.bias', 'cls.seq_relationship.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.dense.bias', 'cls.seq_relationship.weight', 'cls.predictions.decoder.weight']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+  epoch    f1_macro    f1_micro    train_loss    valid_acc    valid_loss    cp       dur
+-------  ----------  ----------  ------------  -----------  ------------  ----  --------
+      1      0.4815      0.5831        0.6841       0.5831        0.6799     +  211.5639
+      2      0.5196      0.5974        0.6778       0.5974        0.6751     +  211.6936
+      3      0.5387      0.6017        0.6738       0.6017        0.6706     +  212.3688
+      4      0.5548      0.6074        0.6693       0.6074        0.6640     +  212.5171
+      5      0.5809      0.6218        0.6603       0.6218        0.6500     +  211.5124
+      6      0.6609      0.6819        0.6399       0.6819        0.6225     +  229.7323
+      7      0.6955      0.6977        0.6093       0.6977        0.5865     +  244.6106
+      8      0.7072      0.7092        0.5708       0.7092        0.5553     +  232.6469
+      9      0.6994      0.7049        0.5278       0.7049        0.5406        221.2970
+     10      0.7197      0.7235        0.4966       0.7235        0.5242     +  220.0848
+     11      0.7362      0.7378        0.4753       0.7378        0.5112     +  220.4869
+     12      0.7320      0.7350        0.4603       0.7350        0.5110        228.2748
+     13      0.7266      0.7292        0.4496       0.7292        0.5099        229.3708
+     14      0.7270      0.7292        0.4440       0.7292        0.5060        212.0145
+     15      0.7322      0.7350        0.4341       0.7350        0.5072        220.6303
+     16      0.7293      0.7321        0.4306       0.7321        0.5077        230.3872
+training done, reloading best checkpoint...
+Re-initializing module because the following parameters were re-set: dr, embedding_dim, hidden_layer_sizes, llm, num_classes, vocab_size.
+Re-initializing criterion.
+Re-initializing optimizer.
+
+[0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0]
+[1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0]
+-------- TEST CLASSIFICATION REPORT --------------
+              precision    recall  f1-score   support
+
+           0       0.72      0.74      0.73       316
+           1       0.78      0.76      0.77       385
+
+    accuracy                           0.76       701
+   macro avg       0.75      0.75      0.75       701
+weighted avg       0.75      0.75      0.75       701
+
+
+D:\FALL2022\capstone>
