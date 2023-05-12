@@ -11,15 +11,18 @@ from transformers import BertModel, DistilBertModel, OpenAIGPTModel,  GPT2Model
 
 from DatasetIter import ADataset
 
-def skorch_net_maker(model_name,
+
+def skorch_net_maker(model_name:str,
                      llmtoken, 
                      llmmodel, 
-                     llm_choice, 
-                     num_epochs, 
-                     max_embed, 
+                     llm_choice:str, 
+                     num_epochs:int, 
+                     max_embed:int, 
                      hidden, 
-                     lr, dr, device, 
+                     lr:float, dr:float, 
+                     device:str, 
                      dev_DS):
+    ''' build a skorch net from all the parameters customized in params_setup'''
     #select classifier
     if llm_choice == "bow":
         classifier = m.CNNTextClassifier if model_name == 'cnn' else m.LSTMTextClassifier
@@ -29,7 +32,9 @@ def skorch_net_maker(model_name,
     # Define some metrics
     f1_micro = EpochScoring("f1_micro", lower_is_better=False,)
     f1_macro = EpochScoring("f1_macro", lower_is_better=False,)
-    
+
+    # BUILD the skorch net form all the parameter preamble
+    # with lots of reporting metrics and checkpoints
     net = sk.NeuralNetClassifier(
                 classifier,
                 module__llm = llmmodel,
@@ -61,7 +66,17 @@ def skorch_net_maker(model_name,
     )
     return net
 
-def parameters_setup(model_name, llm_choice,T,D,S):
+
+def parameters_setup(model_name:str, llm_choice:str, T, D, S):
+    # very custome parameter selection
+    # model_name: lstm, cnn
+    # llm_choice: 'bow', 'bert-base-uncased' as below
+    # handle separately with match
+    # T: train set
+    # D: dev set
+    # S: test set
+    # return bundle of parameters and DATASETS of T,D,S
+
     match llm_choice:
         case 'bow':
             llmtoken=None

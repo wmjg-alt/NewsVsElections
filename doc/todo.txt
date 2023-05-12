@@ -5,11 +5,11 @@ LEFT TO DO:
     GET BEST CLASS REPORTS      X
     TRY DIFFERENT VECs          X
 
-FUTURE
-    BETTER HANDLE NAMING CONVENTIONS 
-    SAVE MORE OF THE DATA
-    MORE DATA ANALYSIS OF the kinds of elections were running
-    2022 MIDTERMS DATA + scrape it
-    GOVERNORS RACES
-    GO BEYOND BOW, state weightings and more
-    IMPROVE BEST-MODELS WITH HYPERPARAMETER CROSS VAL
+FINAL:
+    BETTER HANDLE NAMING CONVENTIONS                            X
+    SAVE MORE OF THE DATA                                       X
+    MORE DATA ANALYSIS OF the kinds of elections were running   X
+    2022 MIDTERMS DATA + scrape it                              NO
+    GOVERNORS RACES                                             NO
+    GO BEYOND BOW, state weightings and more                    X
+    IMPROVE BEST-MODELS WITH HYPERPARAMETER CROSS VAL           X

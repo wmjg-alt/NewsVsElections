@@ -1,13 +1,13 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import re
-import warnings
 from unidecode import unidecode
-warnings.filterwarnings("ignore")
 
 candidate_list_split = " ~ "
 
+
 def masking_names(row):
+    # mask out candidate and opponent's names in all headlines
     target = re.sub(r'[^\w\s]', '', row['candidate'])
     opponent = re.sub(r'[^\w\s]', '', row['opponents'])
     text = re.sub(r'[^\w\s]', '', row['headlines'])
@@ -28,7 +28,9 @@ def masking_names(row):
         
     return text
 
+
 def fill_opponent(row):
+    # gen a df column containing split of ALL candidates
     tmp =" "
     others = row['candidates'].split(candidate_list_split)
     for nm in others:
@@ -36,28 +38,49 @@ def fill_opponent(row):
             tmp = tmp + nm
     return tmp
 
-def preproc(df, shuffle=True):
+
+def preproc(df:pd.DataFrame, shuffle:bool=True):
+    # normalize data in pandas df
+    # gen extra informational columns
+    # shuffle df, if shuffle
     df['headlines'] = df['headlines'].replace('', pd.NA)
     df.dropna(subset=['headlines'], inplace=True) #vs fillna BLANK
+
     df['headlines'] = df['headlines'].apply(lambda x: unidecode(x))
     df['opponents'] = df.apply(lambda x: fill_opponent(x), axis=1)
     df['headlines'] = df.apply(lambda x: masking_names(x), axis=1)
+
     tmp = df.groupby(['year','state','district','totalvotes'], sort=False)
-    print("num of races:", len(tmp))
+
+    print("Num of races:", len(tmp))
+
     mx = tmp['candidatevotes'].transform(max)
     ct = tmp['candidatevotes'].transform('count')
     df['winner'] = mx
     df['numcandidates'] = ct
-    print("avg num of participants in a race:",df['numcandidates'].mean())
+
+    print("Avg num of participants in a race:",df['numcandidates'].mean())
+
     df['votedisparity'] = df['winner'] - df['candidatevotes']
     df['winner'] = df['winner'] == df['candidatevotes']
+
     df = df.drop([c for c in df.columns if "Unnamed" in c], axis=1)
     if shuffle:
         df = df.sample(frac=1).reset_index(drop=True)
     return df
 
 
-def balanced_train_dev_test(df, t_perc, label_column='winner', dev_perc=0.15):
+def balanced_train_dev_test(df:pd.DataFrame, 
+                            t_perc:float,
+                            label_column:str='winner', 
+                            dev_perc:float=0.15):
+    # a balance train_dev_test splitter
+    # df : data in pd.Dataframe
+    # t_perc: percent of train split
+    # label_column: df column with labels to separate
+    # dev_perc: dev set percentage (can be 0)
+    # balance equal percents of 2 class labels in train/dev/test
+    # return train, dev, test
     s = len(df)
     c1_df = df[df[label_column] == True]
     c2_df = df[df[label_column] == False]
@@ -72,15 +95,13 @@ def balanced_train_dev_test(df, t_perc, label_column='winner', dev_perc=0.15):
     train   = pd.concat([c1_df[:c1_tr_sz], c2_df[:c2_tr_sz]])
     train   = train.sample(frac=1).reset_index(drop=True)
     print('TRAIN',len(train))
+
     dev     = pd.concat([c1_df[c1_tr_sz:c1_dev_sz], c2_df[c2_tr_sz:c2_dev_sz]])
     dev     = dev.sample(frac=1).reset_index(drop=True)
     print('DEV',len(dev))
+
     test    = pd.concat([c1_df[c1_dev_sz:], c2_df[c2_dev_sz:]])
     test    = test.sample(frac=1).reset_index(drop=True)
     print('TEST',len(test))
 
     return train, dev, test
-
-
-if __name__ == "__main__":
-    pass

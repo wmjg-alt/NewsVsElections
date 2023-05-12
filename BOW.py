@@ -3,12 +3,19 @@ import pandas as pd
 from collections import Counter
 from sklearn.metrics import classification_report
 
+# TFIDF VEC params
 Vec_sw = 'english'
 Vec_max_f = 10000
 Vec_ngr = (1,1)
 
+
 def bow_plus(df): 
+    # take a pandas df;
+    # build a TdidfVectorize Countvec
+    # a weighted 10000 vocab vector of unigrams + party affiliation as 0,1,2
+
     def party_adjust(r):
+        # democrat = 1, republican = 0, independent = 2
         if 'DEMOC' in r:
             return 1.0
         elif "REPUB" in r:
@@ -36,7 +43,12 @@ def bow_plus(df):
     cvdf['winner'] = df['winner']
     return cvdf
 
+
 def train_w_BOW(trainBOW,devBOW,testBOW, model):
+    # train/dev/test BOW sets and a model
+    # train by fitting to train+dev
+    # eval on test
+    # print classification report
     tdBOW = pd.concat([trainBOW, devBOW])
 
     Xtrain = tdBOW.loc[:,tdBOW.columns != 'winner'].to_numpy()
@@ -47,3 +59,5 @@ def train_w_BOW(trainBOW,devBOW,testBOW, model):
     model.fit(X=Xtrain, y=ytrain)
     preds = model.predict(Xtest)
     print(classification_report(preds,ytest))
+
+    return model

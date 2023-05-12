@@ -7,7 +7,11 @@ from data_manipulation import preproc
 from time import perf_counter, strftime, gmtime
 from sklearn.metrics import classification_report
 
-
+# a headline bag
+# tokenize with tok_fn
+# where too long for the model, take LAST headlines 
+# up to 1000 headliens, max_embed padded 500, so take LAST 500 tokens
+# return tokenization
 def tokenize_from_end(sample, tok_fn, max_embed=500):
     max_embed = max_embed -25 # offset
     toks = sample.split()
@@ -21,6 +25,8 @@ def tokenize_from_end(sample, tok_fn, max_embed=500):
                 return_tensors='pt')
     return r
 
+# A Dataset for serving up tokenized headlines and winner columns 
+# returning input_ids, attention_mask, labels
 class ClassificationDataset(Dataset):
     def __init__(self, data: pd.DataFrame, tokenizer: BertTokenizer, max_seq_len: int=500):
         self.tokenizer = tokenizer
@@ -50,7 +56,8 @@ class ClassificationDataset(Dataset):
             'labels': label
         }
 
-# Define the model architecture
+
+# Define the model architecture, just BERT and forward its logits
 class BERTBinaryClassifier(nn.Module):
     def __init__(self, num_classes):
         super().__init__()
@@ -60,7 +67,9 @@ class BERTBinaryClassifier(nn.Module):
         output = self.bert(input_ids=input_ids, attention_mask=attention_mask)
         return output.logits
 
+
 def train_bert(train, dev, test, epochs=8):
+    '''predefined bert retraining setup with train/dev/test df intake'''
     batch_size      = 9
     learning_rate   = 0.0007
     num_epochs      = epochs
@@ -126,6 +135,7 @@ def train_bert(train, dev, test, epochs=8):
 
         print(f"Epoch {epoch+1}: Validation Accuracy: {accuracy} -- TIME: {formatted_time}")
 
+    # EVAL TEST LOOP
     print('....testing...')
     with torch.no_grad():
         total_correct = 0

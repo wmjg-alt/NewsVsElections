@@ -5,16 +5,12 @@ class LSTMTextClassifier(nn.Module):
     """
     Parameters
     ----------
-    vocab_size : int
-        The dimensionality of the vocabulary (input to Embedding layer)
-    embedding_dim : int
-        The dimensionality of the embedding
-    hidden_layer_sizes : int
-        Dimension size for hidden states within the LSTM
-    num_classes : int, default 2
-        Number of categories in classifier output
-    dr : float, default 0.2
-        Dropout rate
+    vocab_size          input to Embedding layer, size of vocab
+    embedding_dim       
+    hidden_layer_sizes  size of hidden states in the LSTM
+    num_classes         Number of classes in model out    (2)
+    dr                  Dropout rate
+    llm                 llm for embedding if one
     """
 
     def __init__(self, 
@@ -56,10 +52,11 @@ class LSTMTextClassifier(nn.Module):
             torch.nn.init.xavier_uniform_(module.weight.data)
 
     def from_embedding(self, embedded):
-        # forward pass (from the outputs of the embedding)
+        # forward pass (dropout, lstm, pool, fc)
         dropouted = self.dropout(embedded)
         output, (hn, cn) = self.LSTM(dropouted)
 
+        # pool lstm outputs
         pooled = self.pool(output.permute(0,2,1)).squeeze()
         if pooled.dim() != 2:
             pooled = pooled.unsqueeze(0)
@@ -78,35 +75,28 @@ class LLMLSTMTextClassifier(LSTMTextClassifier):
         self.llm = llm
 
     def forward(self, data, mask= None):
+        # embed with LLM, then pass above
         data = self.llm((data * mask) if mask else data).last_hidden_state
         return self.from_embedding(data)
 
 #-----------------------------------------------------------------------------
 class CNNTextClassifier(nn.Module):
     """
-    Parameters
-    ----------
-    vocab_size : int
-        The dimensionality of the vocabulary (input to Embedding layer)
-    embedding_dim : int
-        The dimensionality of the embedding
-    num_classes : int, default 2
-        Number of categories in classifier output    
-    dr : float, default 0.2
-        Dropout rate
-    hidden_layer_sizes : list of int, default = [3,4] 
-        The widths for each set of filters
-    num_filters : int, default = 100
-        Number of filters for each width
-    num_conv_layers : int, default = 3
-        Number of convolutional layers (conv + pool)
-    intermediate_pool_size: int, default = 3
+    vocab_size          input to Embedder
+    embedding_dim 
+    num_classes         Number of classes in model out    (2)
+    dr                  Dropout rate
+    hidden_layer_sizes  The widths for each set of filters
+    num_filters         Number of filters for each width
+    num_conv_layers     Number of convolutional layers (conv + pool)
+    intermediate_pool_size -- 3
+    llm for embedding if one
     """
     def __init__(self, vocab_size=0, 
                        embedding_dim=0,
                        num_classes=2,
                        dr=0.2,
-                       hidden_layer_sizes=[4,3,2], #filter_widths / hidden_layer_sizes
+                       hidden_layer_sizes=[4,3,2], #filter_widths 
                        num_filters=100, 
                        num_conv_layers=2,
                        intermediate_pool_size=3,
@@ -154,13 +144,14 @@ class CNNTextClassifier(nn.Module):
         # forward pass (from the outputs of the embedding)
         chain_in = embedded.permute(0,2,1)
 
+        #Chain through CNN blocks
         all_filters = []
         for i,chain in enumerate(self.filter_modules):
             chain_out = chain(chain_in)
             all_filters.append(chain_out.squeeze())
         
         all_filters = torch.cat(all_filters,dim=-1)
-
+        # pool outputs
         if all_filters.dim() != 2:
             all_filters = all_filters.unsqueeze(0)
 
@@ -180,5 +171,6 @@ class LLMCNNTextClassifier(CNNTextClassifier):
         self.llm = llm
 
     def forward(self, data, mask= None):
+        # embed with llm, then pass above
         data = self.llm((data * mask) if mask else data).last_hidden_state
         return self.from_embedding(data)

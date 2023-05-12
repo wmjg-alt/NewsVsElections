@@ -29,11 +29,13 @@ if __name__ == "__main__":
         #..... train dev test split proper
         print('train/dev/test splitting base data')
         train, dev, test            = balanced_train_dev_test(data, 0.70, dev_perc=0.15)
+        # save data sets
         train.to_csv('models/train.csv')
         dev.to_csv('models/dev.csv')
         test.to_csv('models/test.csv')
         print()
 
+        #BOW sets
         print('train/dev/test splitting with BOW features')
         trainBOW, devBOW, testBOW   = balanced_train_dev_test(data_bow, 0.70, dev_perc=0.15)
         print()
@@ -43,20 +45,22 @@ if __name__ == "__main__":
         dev =pd.read_csv('models/dev.csv').reset_index(drop=True)
         test = pd.read_csv('models/test.csv').reset_index(drop=True)
     
+    # RUN train/eval and SAVE BOW LR
     print('--------------train/test', 'bagofword ML model')
     BOWmodel = LogisticRegressionCV(cv=7,n_jobs=2, max_iter=250, solver='sag')   
     BOWmodel = train_w_BOW(trainBOW,devBOW,testBOW, BOWmodel)
-
     with open('models/BOW_SVC.pkl','wb') as f:
         pickle.dump(BOWmodel,f)
     print()
     
+    # RUN train/eval and SAVE BERT Retrainer
     print('----------- train test on BERT model')
     m_o = train_bert(train, dev, test, epochs=num_epochs)
     s = save(m_o['model'],m_o['optimizer'], model_file='models/retrained.bert')
     print('saved model?:',s)
     print()
     
+    # Loop all embed/model pair training/eval runs
     for (model, llm_choice) in [('lstm','bow'),
                                 ('lstm','distilbert-base-uncased'), 
                                 ('lstm','bert-base-uncased'), 
@@ -78,8 +82,8 @@ if __name__ == "__main__":
             D = dev
             S = test
 
+        # Skorch net setup phase, selections in skorchers.py
         print("---------NN-EXPERIMENT", model, llm_choice, sep='\t')
-        
         (llmtoken,  llmmodel, 
                     max_embed,
                     hidden_layers,
@@ -92,7 +96,7 @@ if __name__ == "__main__":
                                                    T,
                                                    D,
                                                    S)
-        
+        # build skorch net from parameters
         net = skorch_net_maker(model,
                                llmtoken, 
                                llmmodel,
@@ -103,8 +107,8 @@ if __name__ == "__main__":
                                lr, dr, device,
                                dev_DS)
 
+        # skorch net train, reload best checkpoint
         net.fit(train_DS, y=None)
-
         print('training done, reloading best checkpoint...')
         f_path = 'best_performers/'+model.upper()+'_FINAL_'+llm_choice
         net.initialize()
