@@ -8,6 +8,12 @@
 
     So we have a 2 class problem: a month of headlines predicting winners (1) and losers (0)
 
+
+###     DETAILS: https://docs.google.com/presentation/d/1Tx4hDT7lZZKSnJyR573QX_nPPX8JHYDYEel0raiQM0o/edit?usp=sharing
+###     PUBLISHED ALONG THE WAY: https://pypi.org/project/EasyMLSelector/0.1.0/
+
+
+
 ## Outline:
 - Data on results of elections was sourced from MIT Election Lab (/Elections)
         
@@ -100,7 +106,7 @@
         * a wrapper of torch's save and load functionality
 
 # MAINLY
-- with the data in Elections/ NewsData/
+- with the data in Elections/ & NewsData/
 - pip install -r requirements.txt
 - python run_modeling.py
 
@@ -125,4 +131,5 @@ NOTE: GPT was not given sufficient training time/best modelling due to hardware 
 
 
 
-## A mini demo of the predictions on the test set can be run on FLASK with web_demo.py
+## A mini flask demo of the predictions on the test set can be run w/ web_demo.py
+    * need best_performers 
