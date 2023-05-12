@@ -42,7 +42,7 @@ if __name__ == "__main__":
         train = pd.read_csv('models/train.csv').reset_index(drop=True)
         dev =pd.read_csv('models/dev.csv').reset_index(drop=True)
         test = pd.read_csv('models/test.csv').reset_index(drop=True)
-    '''
+    
     print('--------------train/test', 'bagofword ML model')
     BOWmodel = LogisticRegressionCV(cv=7,n_jobs=2, max_iter=250, solver='sag')   
     BOWmodel = train_w_BOW(trainBOW,devBOW,testBOW, BOWmodel)
@@ -56,12 +56,12 @@ if __name__ == "__main__":
     s = save(m_o['model'],m_o['optimizer'], model_file='models/retrained.bert')
     print('saved model?:',s)
     print()
-    '''
-    for (model, llm_choice) in [#('lstm','bow'),
-                                #('lstm','distilbert-base-uncased'), 
+    
+    for (model, llm_choice) in [('lstm','bow'),
+                                ('lstm','distilbert-base-uncased'), 
                                 ('lstm','bert-base-uncased'), 
-                                #('lstm','openai-gpt'),
-                                #('lstm','gpt2'), 
+                                ('lstm','openai-gpt'),
+                                ('lstm','gpt2'), 
                                 #('cnn','bow'),
                                 #('cnn','distilbert-base-uncased'), 
                                 #('cnn','bert-base-uncased'),
