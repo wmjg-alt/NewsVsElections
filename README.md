@@ -37,7 +37,7 @@
         
         * Using pandas to associate Candidate-Elections with their headlines in a big dataframe
         * Output in NEWfull_with_headlines.csv  (also unavailable)
-            * about 4600 candidate elections with close to 200k headlines
+            * about 4600 candidate elections with close to 150k headlines
         * A simple estimator for naively selecting a model from sklearn 
             * (LogisticRegressionCV selected)
         
